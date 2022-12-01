@@ -26,6 +26,13 @@ class Client(Base):
     def __repr__(self):
         return f"Client(id={self.id}, name={self.name}, birth_date={self.birth_date})"
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'birth_date': self.birth_date
+        }
+
 
 class Product(Base):
     __tablename__ = "product-tb"
@@ -36,6 +43,14 @@ class Product(Base):
 
     def __repr__(self):
         return f"Product(id={self.id}, name={self.name}, price={self.price}, inventory={self.inventory})"
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'price': self.price,
+            'inventory': self.inventory
+        }
 
 
 class ShoppingCart(Base):
@@ -50,6 +65,15 @@ class ShoppingCart(Base):
         return f"ShoppingCart(id={self.id}, client_id={self.client_id}, product_id={self.product_id}, " \
                f"quantity={self.quantity} sub_total_price={self.sub_total_price})"
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'sale_id': self.sale_id,
+            'product_id': self.product_id,
+            'quantity': self.quantity,
+            'sub_total_price': self.sub_total_price
+        }
+
 
 class Sale(Base):
     __tablename__ = "sale-tb"
@@ -62,6 +86,15 @@ class Sale(Base):
     def __repr__(self):
         return f"Sale(id={self.id}, client_id={self.client_id},  sale_date={self.sale_date}, " \
                f"total_price={self.total_price}, is_paid={self.is_paid})"
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'client_id': self.client_id,
+            'sale_date': self.sale_date,
+            'total_price': self.total_price,
+            'is_paid': self.is_paid
+        }
 
 
 Base.metadata.create_all(engine)

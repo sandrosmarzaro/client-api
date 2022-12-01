@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, INTEGER, VARCHAR, DATE, NUMERIC, ForeignKey, DATETIME, BOOLEAN
+from sqlalchemy import create_engine, Column, INTEGER, VARCHAR, DATE, NUMERIC, ForeignKey, BOOLEAN, TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -55,7 +55,7 @@ class Sale(Base):
     __tablename__ = "sale-tb"
     id = Column(INTEGER, primary_key=True)
     client_id = Column(INTEGER, ForeignKey("client-tb.id"), nullable=False)
-    sale_date = Column(DATETIME, nullable=False)
+    sale_date = Column(TIMESTAMP(timezone=True), nullable=False)
     total_price = Column(NUMERIC(precision=8, scale=2))
     is_paid = Column(BOOLEAN, default=False, nullable=False)
 

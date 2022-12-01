@@ -1,8 +1,9 @@
 from flask import Flask, jsonify, request
+from sqlalchemy.exc import NoResultFound
+
+from db import session, Client
 
 app = Flask(__name__)
-
-client_list = []
 
 
 @app.route('/')
@@ -11,32 +12,71 @@ def hello_world():
 
 
 @app.route('/api/v1/client', methods=['GET', 'POST'])
-def contacts():
+def clients():
     if request.method == 'GET':
-        return jsonify(client_list), 200
+        return jsonify([client.to_dict() for client in session.query(Client).all()]), 200
     elif request.method == 'POST':
         client = request.get_json()
-        client_list.append(client)
-        return jsonify(client_list), 201
+        session.add(Client(
+            name=client['name'],
+            birth_date=client['birth_date']
+        ))
+        session.commit()
+        return jsonify(client), 201
 
 
 @app.route('/api/v1/client/<int:client_id>', methods=['GET', 'PATCH', 'PUT', 'DELETE'])
 def contact(client_id):
-    response_client = None
+
     if request.method == 'GET':
-        response_client = client_list[client_id]
+        try:
+            client = session.query(Client).filter(Client.id == client_id).one()
+            return jsonify(client.to_dict()), 200
+        except NoResultFound:
+            return jsonify({
+                'message': 'Client not found'
+            }), 404
+
     elif request.method == 'PUT':
         client = request.get_json()
-        client_list[client_id] = client
-        response_client = client
+        try:
+            query = session.query(Client).filter(Client.id == client_id)
+            query.update({
+                'name': client['name'],
+                'birth_date': client['birth_date']
+            })
+            client = query.one().to_dict()
+            session.commit()
+            return jsonify(client), 200
+        except NoResultFound:
+            return jsonify({
+                'message': 'Client not found'
+            }), 404
+
     elif request.method == 'PATCH':
         client = request.get_json()
-        client_list[client_id].update(client)
-        response_client = client
+        try:
+            query = session.query(Client).filter(Client.id == client_id)
+            query.update(client)
+            client = query.one().to_dict()
+            session.commit()
+            return jsonify(client), 200
+        except NoResultFound:
+            return jsonify({
+                'message': 'Client not found'
+            }), 404
+
     elif request.method == 'DELETE':
-        response_client = client_list[client_id]
-        client_list.pop(client_id)
-    return jsonify(response_client), 200
+        try:
+            query = session.query(Client).filter(Client.id == client_id)
+            client = query.one().to_dict()
+            query.delete()
+            session.commit()
+            return jsonify(client), 200
+        except NoResultFound:
+            return jsonify({
+                'message': 'Client not found'
+            }), 404
 
 
 if __name__ == '__main__':

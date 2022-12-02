@@ -13,7 +13,8 @@ def products():
         product = request.get_json()
         session.add(Product(
             name=product['name'],
-            price=product['price']
+            price=product['price'],
+            inventory=product['inventory']
         ))
         session.commit()
         return jsonify(product), 201

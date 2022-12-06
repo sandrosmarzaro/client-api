@@ -63,8 +63,8 @@ def product(product_id):
     elif request.method == 'DELETE':
         try:
             query = session.query(Product).filter(Product.id == product_id)
-            query.delete()
             product = query.one().to_dict()
+            query.delete()
             session.commit()
             return jsonify(product), 200
         except NoResultFound:

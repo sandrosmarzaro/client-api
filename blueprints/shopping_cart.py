@@ -32,7 +32,7 @@ def shopping_carts():
             return jsonify({'message': str(e)}), 400
 
 
-@shopping_cart_bp.route('/<int:shopping_cart_id>', methods=['GET', 'PUT', 'DELETE'])
+@shopping_cart_bp.route('/<int:shopping_cart_id>', methods=['GET', 'PUT', 'PATCH', 'DELETE'])
 def shopping_cart(shopping_cart_id):
     if request.method == 'GET':
         try:
@@ -44,9 +44,10 @@ def shopping_cart(shopping_cart_id):
     elif request.method == 'PUT':
         try:
             shopping_cart = session.query(ShoppingCart).filter(ShoppingCart.id == shopping_cart_id).one()
-            shopping_cart.sale_id = request.get_json()['sale_id']
-            shopping_cart.product_id = request.get_json()['product_id']
-            shopping_cart.quantity = request.get_json()['quantity']
+            cart_request = request.get_json()
+            shopping_cart.sale_id = cart_request['sale_id']
+            shopping_cart.product_id = cart_request['product_id']
+            shopping_cart.quantity = cart_request['quantity']
             session.commit()
             return jsonify(shopping_cart.to_dict()), 200
         except NoResultFound:

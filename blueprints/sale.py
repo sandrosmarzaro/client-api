@@ -35,6 +35,7 @@ def sale(sale_id):
             sale = session.query(Sale).filter(Sale.id == sale_id).one()
             return jsonify(sale.to_dict()), 200
         except NoResultFound:
+            session.rollback()
             return jsonify({
                 'message': 'Sale not found'
             }), 404
@@ -53,6 +54,7 @@ def sale(sale_id):
             session.commit()
             return jsonify(sale), 200
         except NoResultFound:
+            session.rollback()
             return jsonify({
                 'message': 'Sale not found'
             }), 404
@@ -66,6 +68,7 @@ def sale(sale_id):
             session.commit()
             return jsonify(sale), 200
         except NoResultFound:
+            session.rollback()
             return jsonify({
                 'message': 'Sale not found'
             }), 404

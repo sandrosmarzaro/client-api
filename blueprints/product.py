@@ -26,6 +26,7 @@ def product(product_id):
             product = session.query(Product).filter(Product.id == product_id).one()
             return jsonify(product.to_dict()), 200
         except NoResultFound:
+            session.rollback()
             return jsonify({
                 'message': 'Product not found'
             }), 404
@@ -43,6 +44,7 @@ def product(product_id):
             session.commit()
             return jsonify(product), 200
         except NoResultFound:
+            session.rollback()
             return jsonify({
                 'message': 'Product not found'
             }), 404
@@ -56,6 +58,7 @@ def product(product_id):
             session.commit()
             return jsonify(product), 200
         except NoResultFound:
+            session.rollback()
             return jsonify({
                 'message': 'Product not found'
             }), 404
@@ -68,6 +71,7 @@ def product(product_id):
             session.commit()
             return jsonify(product), 200
         except NoResultFound:
+            session.rollback()
             return jsonify({
                 'message': 'Product not found'
             }), 404

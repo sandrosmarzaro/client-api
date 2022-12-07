@@ -26,6 +26,7 @@ def contact(client_id):
             client = session.query(Client).filter(Client.id == client_id).one()
             return jsonify(client.to_dict()), 200
         except NoResultFound:
+            session.rollback()
             return jsonify({
                 'message': 'Client not found'
             }), 404
@@ -42,6 +43,7 @@ def contact(client_id):
             session.commit()
             return jsonify(client), 200
         except NoResultFound:
+            session.rollback()
             return jsonify({
                 'message': 'Client not found'
             }), 404
@@ -55,6 +57,7 @@ def contact(client_id):
             session.commit()
             return jsonify(client), 200
         except NoResultFound:
+            session.rollback()
             return jsonify({
                 'message': 'Client not found'
             }), 404
@@ -67,6 +70,7 @@ def contact(client_id):
             session.commit()
             return jsonify(client), 200
         except NoResultFound:
+            session.rollback()
             return jsonify({
                 'message': 'Client not found'
             }), 404

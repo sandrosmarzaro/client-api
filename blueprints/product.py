@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import NoResultFound, IntegrityError
 
 from db import session, Product
 
@@ -75,3 +75,8 @@ def product(product_id):
             return jsonify({
                 'message': 'Product not found'
             }), 404
+        except IntegrityError:
+            session.rollback()
+            return jsonify({
+                'message': 'Product is associated with a sale'
+            }), 400

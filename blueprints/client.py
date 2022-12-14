@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from sqlalchemy.exc import NoResultFound
+from sqlalchemy.exc import NoResultFound, IntegrityError
 from db import session, Client
 
 client_bp = Blueprint("client", __name__)
@@ -74,3 +74,8 @@ def contact(client_id):
             return jsonify({
                 'message': 'Client not found'
             }), 404
+        except IntegrityError:
+            session.rollback()
+            return jsonify({
+                'message': 'Client has sales'
+            }), 400

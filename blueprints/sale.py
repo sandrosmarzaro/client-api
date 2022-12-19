@@ -17,6 +17,7 @@ def sales():
                 client_id=sale['client_id'],
                 sale_date=datetime.now(),
                 total_price=0,
+                payment_method=None,
                 is_paid=False
             ))
             session.commit()
@@ -48,6 +49,7 @@ def sale(sale_id):
                 'client_id': sale['client_id'],
                 'sale_date': sale['sale_date'],
                 'total_price': sale['total_price'],
+                'payment_method': sale['payment_method'],
                 'is_paid': sale['is_paid']
             })
             sale = query.one().to_dict()

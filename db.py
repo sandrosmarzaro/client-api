@@ -1,4 +1,4 @@
-from sqlalchemy import create_engine, Column, INTEGER, VARCHAR, DATE, NUMERIC, ForeignKey, BOOLEAN, TIMESTAMP
+from sqlalchemy import create_engine, Column, INTEGER, VARCHAR, DATE, NUMERIC, ForeignKey, BOOLEAN, TIMESTAMP, Enum
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
@@ -74,6 +74,10 @@ class ShoppingCart(Base):
             'sub_total_price': self.sub_total_price
         }
 
+class PaymentMethod(Enum):
+    CREDIT_CARD = "credit_card"
+    DEBIT_CARD = "debit_card"
+
 
 class Sale(Base):
     __tablename__ = "sale-tb"
@@ -81,11 +85,12 @@ class Sale(Base):
     client_id = Column(INTEGER, ForeignKey("client-tb.id"), nullable=False)
     sale_date = Column(TIMESTAMP(timezone=True), nullable=False)
     total_price = Column(NUMERIC(precision=8, scale=2))
+    payment_method = Column(Enum("credit_card", "debit_card", name="payment_method"))
     is_paid = Column(BOOLEAN, default=False, nullable=False)
 
     def __repr__(self):
         return f"Sale(id={self.id}, client_id={self.client_id},  sale_date={self.sale_date}, " \
-               f"total_price={self.total_price}, is_paid={self.is_paid})"
+               f"total_price={self.total_price}, payment_method={self.payment_method}, is_paid={self.is_paid})"
 
     def to_dict(self):
         return {
@@ -93,6 +98,7 @@ class Sale(Base):
             'client_id': self.client_id,
             'sale_date': self.sale_date,
             'total_price': self.total_price,
+            'payment_method': self.payment_method,
             'is_paid': self.is_paid
         }
 
